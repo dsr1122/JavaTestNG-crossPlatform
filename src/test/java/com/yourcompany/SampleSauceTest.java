@@ -46,10 +46,7 @@ public class SampleSauceTest implements SauceOnDemandSessionIdProvider, SauceOnD
  //   public String sauce_accesskey = System.getenv("SAUCE_ACCESS_KEY");
 //    public String testobject_apikey = System.getenv("TO_APIKEY");
     
-    public static String sauce_username = "danr";
-    public static String sauce_accesskey = "39513db9-176e-45a5-a581-6fe0ce2bdcee";
-    
-    public static String testobject_apikey = "C7ED8CB5A2674C54AAAA13B4CE2C527C";
+
     
 //    public static String testing_location = "desktop";
 //   public static String testing_location = "emulator";
