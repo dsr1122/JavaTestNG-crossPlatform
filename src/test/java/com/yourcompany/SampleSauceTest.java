@@ -46,10 +46,9 @@ public class SampleSauceTest implements SauceOnDemandSessionIdProvider, SauceOnD
    public String sauce_accesskey = System.getenv("SAUCE_ACCESS_KEY");
    public String testobject_apikey = System.getenv("TO_APIKEY");
     
-
     
 //    public static String testing_location = "desktop";
-//   public static String testing_location = "emulator";
+//    public static String testing_location = "emulator";
     public static String testing_location = "mobile";
 
     private ResultReporter reporter;
@@ -78,16 +77,16 @@ public class SampleSauceTest implements SauceOnDemandSessionIdProvider, SauceOnD
      */
     @DataProvider(name = "hardCodedBrowsers", parallel = true)
     public static Object[][] sauceBrowserDataProvider(Method testMethod) {
-    	
-    	
+        
+        
    
-    	if (testing_location == "desktop") {
-    		Object browsers = new Object[][] {
-    		//return new Object[][]{
+        if (testing_location == "desktop") {
+            Object browsers = new Object[][] {
+            //return new Object[][]{
 
-        	 // Windows
+             // Windows
             
-            	new Object[]{"chrome", "latest", "Windows 10", "null"},
+                new Object[]{"chrome", "latest", "Windows 10", "null"},
             new Object[]{"chrome", "latest", "Windows 7", "nunll"},
             new Object[]{"chrome", "latest", "Windows 8.1", "null"}
 //            new Object[]{"chrome", "57", "Windows 10"},
@@ -123,30 +122,31 @@ public class SampleSauceTest implements SauceOnDemandSessionIdProvider, SauceOnD
             //new Object[]{"firefox", "45", "Linux"},
             //new Object[]{"chrome", "48", "Linux"}
         
-    		};
-    		return (Object[][]) browsers;
+            };
+            return (Object[][]) browsers;
  
-    	} else if (testing_location == "emulator"){
-    		Object browsers = new Object[][] {
-        		//return new Object[][]{
+        } else if (testing_location == "emulator"){
+            Object browsers = new Object[][] {
+                //return new Object[][]{
                 
-                	new Object[]{"safari", "11.0", "iOS", "iPhone 7 Plus Simulator"},
-                	new Object[]{"chrome", "7.0", "Android", "Android GoogleAPI Emulator"}
+                    new Object[]{"safari", "11.0", "iOS", "iPhone 7 Plus Simulator"},
+                    new Object[]{"chrome", "7.0", "Android", "Android GoogleAPI Emulator"},
+                    new Object[]{"safari", "11.0", "iOS", "iPhone 8 Simulator"}
 //                new Object[]{"chrome", "latest", "Windows 7"},
 //                new Object[]{"chrome", "latest", "Windows 8.1"}
-    		};
-    		return (Object[][]) browsers;
-    	} else { //running on real devices
-    		Object devices = new Object[][] {
-        		//return new Object[][]{
+            };
+            return (Object[][]) browsers;
+        } else { //running on real devices
+            Object devices = new Object[][] {
+                //return new Object[][]{
                 
-        	new Object[]{"null", "10", "iOS", "iPhone SE"},
-        	new Object[]{"null", "6", "Android", "Samsung Galaxy S6"}
+            new Object[]{"null", "10", "iOS", "iPhone SE"},
+            new Object[]{"null", "6", "Android", "Samsung Galaxy S6"}
 //                new Object[]{"chrome", "latest", "Windows 7"},
 //                new Object[]{"chrome", "latest", "Windows 8.1"}
-    		};
-    		return (Object[][]) devices;
-    	}
+            };
+            return (Object[][]) devices;
+        }
         
     }
 
@@ -168,16 +168,16 @@ public class SampleSauceTest implements SauceOnDemandSessionIdProvider, SauceOnD
 
         
         if (testing_location != "mobile") {
-	        capabilities.setCapability(CapabilityType.BROWSER_NAME, browser);
-	        capabilities.setCapability(CapabilityType.VERSION, version);
-	        capabilities.setCapability(CapabilityType.PLATFORM, os);
-	        
-	        
-	        
+            capabilities.setCapability(CapabilityType.BROWSER_NAME, browser);
+            capabilities.setCapability(CapabilityType.VERSION, version);
+            capabilities.setCapability(CapabilityType.PLATFORM, os);
+            
+            
+            
         } 
         
         if (testing_location == "emulator") {
-        		capabilities.setCapability("deviceName", device);
+                capabilities.setCapability("deviceName", device);
         }
         
         if (testing_location == "mobile") {
@@ -187,11 +187,18 @@ public class SampleSauceTest implements SauceOnDemandSessionIdProvider, SauceOnD
             capabilities.setCapability("platformName", os);
             capabilities.setCapability("name",  methodName);
             capabilities.setCapability("appiumVersion", "1.7.1");
-        	
+            
         }
         
         //Sends test name as a desired capability to update the Sauce Labs dash board
-        String jobName = methodName + '_' + os + '_' + browser + '_' + version;
+        String jobName;
+        if (testing_location == "desktop") {
+                jobName = methodName + '_' + os + '_' + browser + '_' + version;
+        } else if (testing_location == "emulator") {
+                jobName = methodName + '_' + os + '_' + device + '_' + browser + '_' + version;
+        } else {
+                jobName = methodName + '_' + os + '_' + version;
+        }
         capabilities.setCapability("name", jobName);
 
         //Local Driver
@@ -200,9 +207,9 @@ public class SampleSauceTest implements SauceOnDemandSessionIdProvider, SauceOnD
         
         //Creates Selenium Driver
         if (testing_location != "mobile") {
-	        webDriver.set(new RemoteWebDriver(
-	                new URL("https://" + sauce_username + ":" + sauce_accesskey + "@ondemand.saucelabs.com:443/wd/hub"),
-	                capabilities));
+            webDriver.set(new RemoteWebDriver(
+                    new URL("https://" + sauce_username + ":" + sauce_accesskey + "@ondemand.saucelabs.com:443/wd/hub"),
+                    capabilities));
         } else {
             webDriver.set(new RemoteWebDriver(
                     new URL("http://us1.appium.testobject.com/wd/hub"),
@@ -210,13 +217,13 @@ public class SampleSauceTest implements SauceOnDemandSessionIdProvider, SauceOnD
         }
         
       //Keeps track of the unique Selenium session ID used to identify jobs on Sauce Labs
-        if (testing_location == "mobile") {
-	        String id = ((RemoteWebDriver) getWebDriver()).getSessionId().toString();
-	        sessionId.set(id);
-	        
-	        //For CI plugins
-	        String message = String.format("SauceOnDemandSessionID=%1$s job-name=%2$s", id, jobName);
-	        System.out.println(message);
+        if (testing_location != "mobile") {
+            String id = ((RemoteWebDriver) getWebDriver()).getSessionId().toString();
+            sessionId.set(id);
+            
+            //For CI plugins
+            String message = String.format("SauceOnDemandSessionID=%1$s job-name=%2$s", id, jobName);
+            System.out.println(message);
         }
         return webDriver.get();
     }
@@ -254,33 +261,33 @@ public class SampleSauceTest implements SauceOnDemandSessionIdProvider, SauceOnD
 //        driver.click(locator);
         
         if (testing_location == "desktop") {
-	        Actions actions = new Actions(driver);
-	        WebElement mainMenu = driver.findElement(By.id("et_globalNavigation_E098AB76"));
-	        actions.moveToElement(mainMenu);
-	
-	        WebElement subMenu = driver.findElement(By.id("et_globalNavigation_EAE6F61B"));
-	        actions.moveToElement(subMenu);
-	        actions.click().build().perform();
+            Actions actions = new Actions(driver);
+            WebElement mainMenu = driver.findElement(By.id("et_globalNavigation_E098AB76"));
+            actions.moveToElement(mainMenu);
+    
+            WebElement subMenu = driver.findElement(By.id("et_globalNavigation_EAE6F61B"));
+            actions.moveToElement(subMenu);
+            actions.click().build().perform();
         } else {
-        		driver.findElement(By.xpath("//*[@id=\"mobilenav\"]/div[1]/ul/li[1]/a")).click();
-        		
-        		try{
-    	     	   Thread.sleep(10000);
-    	     	  }catch (InterruptedException ie1) {
-    	     	    //ie1.printStackTrace();
-    	     	  } 
-        		
-        		driver.findElement(By.id("et_globalNavigation_EAE6F61B")).click();
+                driver.findElement(By.xpath("//*[@id=\"mobilenav\"]/div[1]/ul/li[1]/a")).click();
+                
+                try{
+                   Thread.sleep(10000);
+                  }catch (InterruptedException ie1) {
+                    //ie1.printStackTrace();
+                  } 
+                
+                driver.findElement(By.id("et_globalNavigation_EAE6F61B")).click();
 
         }
         
         try{
-        	   Thread.sleep(10000);
-        	  }catch (InterruptedException ie1) {
-        	    //ie1.printStackTrace();
-        	  } 
+               Thread.sleep(10000);
+              }catch (InterruptedException ie1) {
+                //ie1.printStackTrace();
+              } 
         if (testing_location != "mobile") {
-        		assertEquals(driver.getTitle(), "Healthy Lifestyle - Healthy Lifestyle - Mayo Clinic");
+                assertEquals(driver.getTitle(), "Healthy Lifestyle - Healthy Lifestyle - Mayo Clinic");
         }
     }
     /**
@@ -302,16 +309,16 @@ public class SampleSauceTest implements SauceOnDemandSessionIdProvider, SauceOnD
     @AfterMethod
     public void tearDown(ITestResult result) {
     if (testing_location == "mobile") {
-	    	RemoteWebDriver driver = getWebDriver();
-	    	reporter = new ResultReporter();
-	        boolean success = result.isSuccess();
-	        String sessionId = driver.getSessionId().toString();
-	
-	        reporter.saveTestStatus(sessionId, success);
-	        driver.quit();
-	    } else {
-	    	webDriver.get().quit();
-	    }
+            RemoteWebDriver driver = getWebDriver();
+            reporter = new ResultReporter();
+            boolean success = result.isSuccess();
+            String sessionId = driver.getSessionId().toString();
+    
+            reporter.saveTestStatus(sessionId, success);
+            driver.quit();
+        } else {
+            webDriver.get().quit();
+        }
     }
     /**
      *
