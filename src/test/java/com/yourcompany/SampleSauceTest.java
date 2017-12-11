@@ -48,7 +48,7 @@ public class SampleSauceTest implements SauceOnDemandSessionIdProvider, SauceOnD
     
     
 //    public static String testing_location = "desktop";
-    public static String testing_location = "emulator";
+  public static String testing_location = "emulator";
 //    public static String testing_location = "mobile";
 
     private ResultReporter reporter;
