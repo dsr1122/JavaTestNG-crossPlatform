@@ -42,9 +42,9 @@ import static org.testng.Assert.assertEquals;
 @Listeners({SauceOnDemandTestListener.class})
 public class SampleSauceTest implements SauceOnDemandSessionIdProvider, SauceOnDemandAuthenticationProvider {
 
- //   public String sauce_username = System.getenv("SAUCE_USERNAME");
- //   public String sauce_accesskey = System.getenv("SAUCE_ACCESS_KEY");
-//    public String testobject_apikey = System.getenv("TO_APIKEY");
+   public String sauce_username = System.getenv("SAUCE_USERNAME");
+   public String sauce_accesskey = System.getenv("SAUCE_ACCESS_KEY");
+   public String testobject_apikey = System.getenv("TO_APIKEY");
     
 
     
